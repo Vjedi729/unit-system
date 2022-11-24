@@ -1,6 +1,6 @@
 import Unit from './unit' 
-
 export default Unit;
+export * from './unit'
 
 export * from './unitShape'
 

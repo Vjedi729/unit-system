@@ -43,7 +43,7 @@ function createAbbreviation(unitPowers: UnitPowers): string | undefined {
     return undefined
 }
 
-export default class CombinationUnit extends Unit {
+export class CombinationUnit extends Unit {
     static nameRegistry: {[key: string]: {name: string, abbreviation?: string}}
 
     unitPowers: UnitPowers
@@ -106,3 +106,5 @@ export default class CombinationUnit extends Unit {
         }, quantityInBaseSI)
     }
 }
+
+export default CombinationUnit

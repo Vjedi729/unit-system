@@ -18,7 +18,7 @@ function UnitTypeShape_Equal(a: UnitShapeMap, b: UnitShapeMap): boolean {
     )
 }
 
-class UnitShape /*implements VectorLike<UnitShape>*/ {
+export class UnitShape /*implements VectorLike<UnitShape>*/ {
     shape: UnitShapeMap
 
     constructor(unitType?: UnitBasisType | UnitShapeMap | UnitShape){

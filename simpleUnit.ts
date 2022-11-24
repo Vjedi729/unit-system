@@ -1,7 +1,7 @@
 import Unit from './unit'
 import UnitShape, {UnitBasisType, UnitShapeMap} from './unitShape'
 
-class SimpleUnit extends Unit {
+export class SimpleUnit extends Unit {
     scaleToBaseSI: number
     oneOverScale: number
 

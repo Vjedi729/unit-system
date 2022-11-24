@@ -1,4 +1,4 @@
-import { assert } from "console"
+// import { assert } from "console"
 import UnitShape, { UnitBasisType, UnitShapeMap } from "./unitShape"
 
 export abstract class Unit {
@@ -12,9 +12,9 @@ export abstract class Unit {
         this.shape = shape instanceof UnitShape ? shape : new UnitShape(shape)
     }
 
-    protected test(valuesToTest: Array<number>, maxPercentError: number = 0.01){
-        valuesToTest.forEach(x => {assert(this.roundTripError(x) < maxPercentError*x)})
-    }
+    // protected test(valuesToTest: Array<number>, maxPercentError: number = 0.01){
+    //     valuesToTest.forEach(x => {assert(this.roundTripError(x) < maxPercentError*x)})
+    // }
     
     roundTripError(valueToTest: number){
         let y = this.toBaseSI(this.fromBaseSI(valueToTest))

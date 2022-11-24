@@ -1,0 +1,25 @@
+{
+  "name": "unit-system",
+  "version": "0.1.0",
+  "description": "A system for creating and combining units to streamline dimensional analysis and simplify unit conversion.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vjedi729/unit-system.git"
+  },
+  "author": "goggles",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vjedi729/unit-system/issues"
+  },
+  "homepage": "https://github.com/Vjedi729/unit-system#readme",
+  "dependencies": {
+    "console": "^0.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9"
+  }
+}

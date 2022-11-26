@@ -14,6 +14,15 @@ export class SimpleUnit extends Unit {
 
     toBaseSI(x: number) { return this.scaleToBaseSI * x }
     fromBaseSI(x: number) { return this.oneOverScale * x}
+
+    static Relative(name:string, relativeTo:SimpleUnit, relativeScale:number, abbreviation?: string): SimpleUnit{
+        return new SimpleUnit(
+            name,
+            relativeTo.shape,
+            relativeTo.scaleToBaseSI * relativeScale,
+            abbreviation
+        )
+    }
 }
 
 export default SimpleUnit

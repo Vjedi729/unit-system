@@ -1,6 +1,6 @@
 {
   "name": "@goggles/unit-system",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A system for creating and combining units to streamline dimensional analysis and simplify unit conversion.",
   "main": "index.js",
   "scripts": {

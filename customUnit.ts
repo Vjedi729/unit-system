@@ -1,3 +1,4 @@
+import { UnitNameConfig } from "./nameConstruct";
 import Unit from "./unit";
 import UnitShape, { UnitBasisType, UnitShapeMap } from "./unitShape";
 
@@ -10,9 +11,9 @@ export class CustomUnit extends Unit {
         shape: UnitBasisType | UnitShapeMap | UnitShape, 
         toBaseSIFunction: (numInThisUnit: number) => number, 
         fromBaseSIFunction: (numInBaseSI: number) => number, 
-        name: string, abbreviation?: string, otherNames?: Array<string>
+        nameConfig: UnitNameConfig
     ){
-        super(shape, name, abbreviation, otherNames)
+        super(shape, nameConfig)
         this.toBaseSIFunction = toBaseSIFunction
         this.fromBaseSIFunction = fromBaseSIFunction
     }

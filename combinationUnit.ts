@@ -1,3 +1,4 @@
+import { UnitNameConfig, UnitNameConstruct } from "./nameConstruct";
 import { Unit } from "./unit";
 import UnitShape, { UnitShapeMap } from "./unitShape";
 
@@ -44,7 +45,7 @@ function createAbbreviation(unitPowers: UnitPowers): string | undefined {
 }
 
 export class CombinationUnit extends Unit {
-    static nameRegistry: {[key: string]: {name: string, abbreviation?: string}}
+    static nameRegistry: {[key: string]: UnitNameConfig}
 
     unitPowers: UnitPowers
 
@@ -70,23 +71,21 @@ export class CombinationUnit extends Unit {
         return CombinationUnit.SortUnitPowers(Object.entries(units).map(([, entry]) => entry))
     }
 
-    constructor(unitPowers: UnitPowers, name?: string, abbreviation?: string){
+    constructor(unitPowers: UnitPowers, nameConfig?: UnitNameConfig){
         unitPowers = CombinationUnit.SimplifyUnitPowers(unitPowers)
         
-        if (name) {
+        if (nameConfig) {
             // Register name and abbreviation
             let createdName = createName(unitPowers)
             let registeredName = CombinationUnit.nameRegistry[createdName]
-            CombinationUnit.nameRegistry[createdName] = { name: name, abbreviation: abbreviation || registeredName.abbreviation }
+            CombinationUnit.nameRegistry[createdName] = nameConfig
         } else {
-            name = createName(unitPowers)
-            let registeredName = CombinationUnit.nameRegistry[name]
-            if (registeredName) {
-                name = registeredName.name
-                abbreviation = abbreviation || registeredName.abbreviation
-            }
+            let createdName = createName(unitPowers)
+            let registeredNameConfig = CombinationUnit.nameRegistry[createdName]
+            nameConfig = registeredNameConfig ? registeredNameConfig : new UnitNameConstruct(createdName, createAbbreviation(unitPowers)) // TODO: Create combinatoric otherNames?
         }
-        super(name, createShape(unitPowers), abbreviation || createAbbreviation(unitPowers))
+        // TODO: Create combinatoric otherNames? 
+        super(createShape(unitPowers), nameConfig)
         this.unitPowers = unitPowers  
     }
 

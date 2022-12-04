@@ -1,15 +1,23 @@
 // import { assert } from "console"
+import { UnitNameConfig } from "./nameConstruct"
 import UnitShape, { UnitBasisType, UnitShapeMap } from "./unitShape"
 
 export abstract class Unit {
     name: string
     abbreviation?: string
+    names: Array<string>
     shape: UnitShape
 
-    constructor(name: string, shape: UnitBasisType | UnitShapeMap | UnitShape, abbreviation?: string){
-        this.name = name
-        this.abbreviation = abbreviation
+    constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, nameConfig: UnitNameConfig){
         this.shape = shape instanceof UnitShape ? shape : new UnitShape(shape)
+        
+        this.name = nameConfig.name
+        this.abbreviation = nameConfig.abbreviation
+        
+        let nameSet = new Set([nameConfig.name])
+        if (nameConfig.abbreviation) nameSet.add(nameConfig.abbreviation)
+        if (nameConfig.otherNames) nameConfig.otherNames.forEach((otherName) => {nameSet.add(otherName)})
+        this.names = new Array<string>(...nameSet.values())
     }
 
     // protected test(valuesToTest: Array<number>, maxPercentError: number = 0.01){

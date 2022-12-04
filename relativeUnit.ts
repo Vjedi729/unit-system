@@ -1,13 +1,13 @@
 import Unit from './unit'
-import UnitShape, {UnitBasisType, UnitShapeMap} from './unitShape'
+import { UnitNameConfig } from './nameConstruct'
 
 export class RelativeUnit extends Unit {
 
     relativeTo: Unit
     relativeUnitPerThisUnit: number
     
-    constructor(name:string, relativeTo:Unit, relativeUnitPerThisUnit:number, abbreviation?: string){
-        super(name, relativeTo.shape, abbreviation)
+    constructor(relativeTo:Unit, relativeUnitPerThisUnit:number, nameConfig: UnitNameConfig){
+        super(relativeTo.shape, nameConfig)
 
         this.relativeUnitPerThisUnit = relativeUnitPerThisUnit
         this.relativeTo = relativeTo
@@ -21,11 +21,11 @@ export class RelativeUnit extends Unit {
         return this.relativeTo.toBaseSI(quantityInThisUnit*this.relativeUnitPerThisUnit)
     }
 
-    static MultipleOf(name:string, relativeTo:Unit, relativeUnitPerThisUnit:number, abbreviation?: string){
-        return new RelativeUnit(name, relativeTo, relativeUnitPerThisUnit, abbreviation)
+    static MultipleOf(relativeTo:Unit, relativeUnitPerThisUnit:number, nameConfig: UnitNameConfig){
+        return new RelativeUnit(relativeTo, relativeUnitPerThisUnit, nameConfig)
     }
 
-    static FractionOf(name: string, relativeTo:Unit, thisUnitPerRelativeUnit: number, abbreviation?: string): RelativeUnit{
-        return new RelativeUnit(name, relativeTo, 1/thisUnitPerRelativeUnit, abbreviation)
+    static FractionOf(relativeTo:Unit, thisUnitPerRelativeUnit: number, nameConfig: UnitNameConfig): RelativeUnit{
+        return new RelativeUnit(relativeTo, 1/thisUnitPerRelativeUnit, nameConfig)
     }
 }

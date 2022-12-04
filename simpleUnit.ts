@@ -1,3 +1,4 @@
+import { UnitNameConfig } from './nameConstruct'
 import Unit from './unit'
 import UnitShape, {UnitBasisType, UnitShapeMap} from './unitShape'
 
@@ -5,9 +6,8 @@ export class SimpleUnit extends Unit {
     scaleToBaseSI: number
     oneOverScale: number
 
-    constructor(name:string, shape: UnitBasisType | UnitShapeMap | UnitShape, scaleToBaseSI: number, abbreviation?: string) 
-    {
-        super(name, shape, abbreviation)
+    constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, scaleToBaseSI: number, nameConfig: UnitNameConfig){
+        super(shape, nameConfig)
         this.scaleToBaseSI = scaleToBaseSI
         this.oneOverScale = 1/scaleToBaseSI
     }
@@ -15,12 +15,11 @@ export class SimpleUnit extends Unit {
     toBaseSI(x: number) { return this.scaleToBaseSI * x }
     fromBaseSI(x: number) { return this.oneOverScale * x}
 
-    static Relative(name:string, relativeTo:SimpleUnit, relativeScale:number, abbreviation?: string): SimpleUnit{
+    static Relative(relativeTo:SimpleUnit, relativeScale:number, nameConfig: UnitNameConfig): SimpleUnit{
         return new SimpleUnit(
-            name,
             relativeTo.shape,
             relativeTo.scaleToBaseSI * relativeScale,
-            abbreviation
+            nameConfig
         )
     }
 }

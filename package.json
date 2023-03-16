@@ -4,7 +4,7 @@
   "description": "A system for creating and combining units to streamline dimensional analysis and simplify unit conversion.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/Vjedi729/unit-system#readme",
   "devDependencies": {
-    "@types/node": "^18.11.9"
+    "@jest/globals": "^29.5.0",
+    "@types/node": "^18.11.9",
+    "babel-jest": "^29.5.0",
+    "ts-jest": "^29.0.5"
   }
 }

@@ -7,7 +7,7 @@ export class RelativeUnit extends Unit {
     relativeUnitPerThisUnit: number
     
     constructor(relativeTo:Unit, relativeUnitPerThisUnit:number, nameConfig: UnitNameConfig){
-        super(relativeTo.shape, nameConfig)
+        super(relativeTo.shape, relativeTo.mathConfig, nameConfig)
 
         this.relativeUnitPerThisUnit = relativeUnitPerThisUnit
         this.relativeTo = relativeTo

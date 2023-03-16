@@ -1,5 +1,5 @@
 import { UnitNameConfig } from "./nameConstruct";
-import Unit from "./unit";
+import Unit, { MathematicalConfig } from "./unit";
 import UnitShape, { UnitBasisType, UnitShapeMap } from "./unitShape";
 
 export class CustomUnit extends Unit {
@@ -8,12 +8,13 @@ export class CustomUnit extends Unit {
 
 
     constructor(
-        shape: UnitBasisType | UnitShapeMap | UnitShape, 
+        shape: UnitBasisType | UnitShapeMap | UnitShape,
         toBaseSIFunction: (numInThisUnit: number) => number, 
         fromBaseSIFunction: (numInBaseSI: number) => number, 
-        nameConfig: UnitNameConfig
+        mathConfig: MathematicalConfig,
+        nameConfig: UnitNameConfig,
     ){
-        super(shape, nameConfig)
+        super(shape, mathConfig, nameConfig)
         this.toBaseSIFunction = toBaseSIFunction
         this.fromBaseSIFunction = fromBaseSIFunction
     }

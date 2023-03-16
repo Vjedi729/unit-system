@@ -2,18 +2,30 @@
 import { UnitNameConfig } from "./nameConstruct"
 import UnitShape, { UnitBasisType, UnitShapeMap } from "./unitShape"
 
+export interface MathematicalConfig {
+    hasAbsoluteZero: boolean
+    isLinear: boolean
+}
+
 export abstract class Unit {
     name: string
     abbreviation?: string
     names: Array<string>
+
+    mathConfig: MathematicalConfig 
+    public get hasAbsoluteZero() : boolean { return this.mathConfig.hasAbsoluteZero }
+    public get isLinear() : boolean { return this.mathConfig.isLinear }
+
     shape: UnitShape
 
-    constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, nameConfig: UnitNameConfig){
+    constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, mathConfig: MathematicalConfig, nameConfig: UnitNameConfig){
         this.shape = shape instanceof UnitShape ? shape : new UnitShape(shape)
         
         this.name = nameConfig.name
         this.abbreviation = nameConfig.abbreviation
-        
+
+        this.mathConfig = mathConfig
+
         let nameSet = new Set([nameConfig.name])
         if (nameConfig.abbreviation) nameSet.add(nameConfig.abbreviation)
         if (nameConfig.otherNames) nameConfig.otherNames.forEach((otherName) => {nameSet.add(otherName)})

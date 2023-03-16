@@ -1,5 +1,5 @@
 import { UnitNameConfig, UnitNameConstruct } from "./nameConstruct";
-import { Unit } from "./unit";
+import { MathematicalConfig, Unit } from "./unit";
 import UnitShape, { UnitShapeMap } from "./unitShape";
 
 type UnitPower = [Unit, number]
@@ -44,6 +44,16 @@ function createAbbreviation(unitPowers: UnitPowers): string | undefined {
     return undefined
 }
 
+function createMathConfig(unitPowers: UnitPowers): MathematicalConfig {
+    return unitPowers.reduce<MathematicalConfig>(
+        (prev:MathematicalConfig, [unit, power]) => ({ 
+            isLinear: prev.isLinear && unit.isLinear, 
+            hasAbsoluteZero: prev.hasAbsoluteZero && unit.hasAbsoluteZero
+        }),
+        { isLinear: true, hasAbsoluteZero: true }
+    )
+}
+
 export class CombinationUnit extends Unit {
     static nameRegistry: {[key: string]: UnitNameConfig}
 
@@ -85,7 +95,7 @@ export class CombinationUnit extends Unit {
             nameConfig = registeredNameConfig ? registeredNameConfig : new UnitNameConstruct(createdName, createAbbreviation(unitPowers)) // TODO: Create combinatoric otherNames?
         }
         // TODO: Create combinatoric otherNames? 
-        super(createShape(unitPowers), nameConfig)
+        super(createShape(unitPowers), createMathConfig(unitPowers), nameConfig)
         this.unitPowers = unitPowers  
     }
 

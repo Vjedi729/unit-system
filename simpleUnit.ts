@@ -7,7 +7,7 @@ export class SimpleUnit extends Unit {
     oneOverScale: number
 
     constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, scaleToBaseSI: number, nameConfig: UnitNameConfig){
-        super(shape, nameConfig)
+        super(shape, { isLinear: true, hasAbsoluteZero: true }, nameConfig)
         this.scaleToBaseSI = scaleToBaseSI
         this.oneOverScale = 1/scaleToBaseSI
     }

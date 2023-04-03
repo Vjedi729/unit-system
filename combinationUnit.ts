@@ -10,9 +10,9 @@ const sortResult = {aGreater: 1, bGreater: -1, bothEqual: 0}
 function unitPowerSort([unitA, powerA]: UnitPower , [unitB, powerB]: UnitPower) {
     // Positive powers before negative powers
     if ( powerA > 0 && powerB < 0 ) {
-        return sortResult.aGreater
-    } else if (powerB > 0 && powerA < 0) {
         return sortResult.bGreater
+    } else if (powerB > 0 && powerA < 0) {
+        return sortResult.aGreater
     }
 
     // By Unit name (A-Z alphabetical order)
@@ -55,9 +55,10 @@ function createMathConfig(unitPowers: UnitPowers): MathematicalConfig {
 }
 
 export class CombinationUnit extends Unit {
-    static nameRegistry: {[key: string]: UnitNameConfig}
+    static nameRegistry: Record<string, UnitNameConfig> = {}
 
     unitPowers: UnitPowers
+    override abbreviation: string;
 
     private static SortUnitPowers(unitPowers: UnitPowers) : UnitPowers {
         return unitPowers.sort(unitPowerSort)
@@ -70,15 +71,24 @@ export class CombinationUnit extends Unit {
     }
 
     private static SimplifyUnitPowers(unitPowers: UnitPowers): UnitPowers {
+        // Create single list of powers of all contained units
         let flatUnitPowers = CombinationUnit.FlattenUnitPowers(unitPowers)
 
-        let units:{[key:string]: UnitPower} = {}
+        // Combine powers of the same unit
+        let combinedUnitPowers: Record<string, UnitPower> = {}
         flatUnitPowers.forEach(([unit, power]) => {
-            let [, prevPower] = units[unit.name]
-            units[unit.name] = [unit, (prevPower || 0) + power]
+            let key = JSON.stringify(unit)
+            let [_, prevPower] = combinedUnitPowers[key] || [undefined, 0]
+            combinedUnitPowers[key] = [unit, prevPower + power]
         })
 
-        return CombinationUnit.SortUnitPowers(Object.entries(units).map(([, entry]) => entry))
+        // Remove units with power 0
+        let filteredUnitPowers: Record<string, UnitPower> = {}
+        Object.entries(combinedUnitPowers).filter(([, [, power]]) => power != 0).forEach(
+            ([name, unitPower]) => { filteredUnitPowers[name] = unitPower }
+        ) 
+
+        return CombinationUnit.SortUnitPowers(Object.entries(filteredUnitPowers).map(([, entry]) => entry))
     }
 
     constructor(unitPowers: UnitPowers, nameConfig?: UnitNameConfig){
@@ -87,14 +97,15 @@ export class CombinationUnit extends Unit {
         if (nameConfig) {
             // Register name and abbreviation
             let createdName = createName(unitPowers)
-            let registeredName = CombinationUnit.nameRegistry[createdName]
+            // let registeredName = CombinationUnit.nameRegistry[createdName]
             CombinationUnit.nameRegistry[createdName] = nameConfig
         } else {
             let createdName = createName(unitPowers)
             let registeredNameConfig = CombinationUnit.nameRegistry[createdName]
             nameConfig = registeredNameConfig ? registeredNameConfig : new UnitNameConstruct(createdName, createAbbreviation(unitPowers)) // TODO: Create combinatoric otherNames?
         }
-        // TODO: Create combinatoric otherNames? 
+        // TODO: Create combinatoric otherNames?
+
         super(createShape(unitPowers), createMathConfig(unitPowers), nameConfig)
         this.unitPowers = unitPowers  
     }
@@ -102,7 +113,7 @@ export class CombinationUnit extends Unit {
     toBaseSI(quantityInThisUnit: number): number {
         return this.unitPowers.reduce<number>((result, [unit, power]) => {
             for(let i=0; i<power; i++){ result = unit.toBaseSI(result) }
-            for(let i=0; i>-power; i--){ result = unit.fromBaseSI(result) }
+            for(let i=0; i>power; i--){ result = unit.fromBaseSI(result) }
             return result
         }, quantityInThisUnit)
     }
@@ -110,7 +121,7 @@ export class CombinationUnit extends Unit {
     fromBaseSI(quantityInBaseSI: number): number {
         return this.unitPowers.reduce<number>((result, [unit, power]) => {
             for(let i=0; i<power; i++){ result = unit.fromBaseSI(result) }
-            for(let i=0; i>-power; i--){ result = unit.toBaseSI(result) }
+            for(let i=0; i>power; i--){ result = unit.toBaseSI(result) }
             return result
         }, quantityInBaseSI)
     }

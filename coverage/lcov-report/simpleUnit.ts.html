@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.96% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/27</span>
+                <span class='fraction'>27/27</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.96% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/27</span>
+                <span class='fraction'>27/27</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -99,21 +99,21 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -125,22 +125,22 @@ export class SimpleUnit extends Unit {
     scaleToBaseSI: number
     oneOverScale: number
 &nbsp;
-<span class="fstat-no" title="function not covered" >    constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, scaleToBaseSI: number, nameConfig: UnitNameConfig){</span>
-<span class="cstat-no" title="statement not covered" >        super(shape, { isLinear: true, hasAbsoluteZero: true }, nameConfig)</span>
-<span class="cstat-no" title="statement not covered" >        this.scaleToBaseSI = scaleToBaseSI</span>
-<span class="cstat-no" title="statement not covered" >        this.oneOverScale = 1/scaleToBaseSI</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
+    constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, scaleToBaseSI: number, nameConfig: UnitNameConfig){
+        super(shape, { isLinear: true, hasAbsoluteZero: true }, nameConfig)
+        this.scaleToBaseSI = scaleToBaseSI
+        this.oneOverScale = 1/scaleToBaseSI
+    }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    toBaseSI(x: number) { return this.scaleToBaseSI * x }</span>
-<span class="fstat-no" title="function not covered" >    fromBaseSI(x: number) { return this.oneOverScale * x}</span>
+    toBaseSI(x: number) { return this.scaleToBaseSI * x }
+    fromBaseSI(x: number) { return this.oneOverScale * x}
 &nbsp;
-    static <span class="fstat-no" title="function not covered" >Relative(relativeTo:SimpleUnit, relativeScale:number, nameConfig: UnitNameConfig): SimpleUnit{</span>
-<span class="cstat-no" title="statement not covered" >        return new SimpleUnit(</span>
-<span class="cstat-no" title="statement not covered" >            relativeTo.shape,</span>
-<span class="cstat-no" title="statement not covered" >            relativeTo.scaleToBaseSI * relativeScale,</span>
-<span class="cstat-no" title="statement not covered" >            nameConfig</span>
-<span class="cstat-no" title="statement not covered" >        )</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
+    // static Relative(relativeTo:SimpleUnit, relativeScale:number, nameConfig: UnitNameConfig): SimpleUnit{
+    //     return new SimpleUnit(
+    //         relativeTo.shape,
+    //         relativeTo.scaleToBaseSI * relativeScale,
+    //         nameConfig
+    //     )
+    // }
 }
 &nbsp;
 export default SimpleUnit
@@ -151,7 +151,7 @@ export default SimpleUnit
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-16T23:53:24.258Z
+                at 2023-04-03T01:45:27.425Z
             </div>
         <script src="prettify.js"></script>
         <script>

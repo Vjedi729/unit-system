@@ -4,10 +4,18 @@
 export type UnitBasisType = "Length" | "Time" | "Mass" | "Temperature" | "ElectricCurrent" | "LuminousIntensity" | "Amount" | string
 export type UnitShapeMap = {[key:UnitBasisType]:number}
 
-function IsUnitBasisType(x:UnitBasisType | UnitShapeMap):boolean { return typeof(x) == "string"}
+// function IsUnitBasisType(x:UnitBasisType | UnitShapeMap | UnitShape):boolean { return typeof(x) == "string"}
 
-function ToUnitTypeShape(unitType: UnitBasisType | UnitShapeMap): UnitShapeMap{
-    return IsUnitBasisType(unitType) ? {unitType: 1} : (unitType as UnitShapeMap)
+function ToUnitTypeShape(unitType: UnitBasisType | UnitShapeMap | UnitShape): UnitShapeMap {
+    if (typeof(unitType) == "string") {
+        let unitTypeShape = {}
+        unitTypeShape[unitType] = 1
+        return unitTypeShape
+    } else if (unitType instanceof UnitShape) {
+        return unitType.shape
+    } else {
+        return (unitType as UnitShapeMap)
+    } 
 }
 
 function UnitTypeShape_Equal(a: UnitShapeMap, b: UnitShapeMap): boolean {
@@ -22,8 +30,7 @@ export class UnitShape /*implements VectorLike<UnitShape>*/ {
     shape: UnitShapeMap
 
     constructor(unitType?: UnitBasisType | UnitShapeMap | UnitShape){
-        this.shape = unitType==undefined ? {} : (typeof(unitType) == "string") ? {unitType: 1} : ((unitType instanceof UnitShape) ? unitType.shape : unitType)
-    }
+        this.shape = unitType==undefined ? {} : ToUnitTypeShape(unitType) }
 
     equal(other: UnitShape){ return UnitTypeShape_Equal(this.shape, other.shape) }
 

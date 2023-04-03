@@ -19,7 +19,7 @@ export abstract class Unit {
     shape: UnitShape
 
     constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, mathConfig: MathematicalConfig, nameConfig: UnitNameConfig){
-        this.shape = shape instanceof UnitShape ? shape : new UnitShape(shape)
+        this.shape = new UnitShape(shape) // instanceof UnitShape ? shape : new UnitShape(shape)
         
         this.name = nameConfig.name
         this.abbreviation = nameConfig.abbreviation
@@ -36,10 +36,10 @@ export abstract class Unit {
     //     valuesToTest.forEach(x => {assert(this.roundTripError(x) < maxPercentError*x)})
     // }
     
-    roundTripError(valueToTest: number){
-        let y = this.toBaseSI(this.fromBaseSI(valueToTest))
-        return Math.abs(y - valueToTest)
-    }
+    // roundTripError(valueToTest: number){
+    //     let y = this.toBaseSI(this.fromBaseSI(valueToTest))
+    //     return Math.abs(y - valueToTest)
+    // }
 
     abstract toBaseSI(quantityInThisUnit: number): number
     abstract fromBaseSI(quantityInBaseSI: number): number

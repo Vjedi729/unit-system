@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.37% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>53/58</span>
+                <span class='fraction'>58/58</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/7</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/6</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.37% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>53/58</span>
+                <span class='fraction'>58/58</span>
             </div>
         
             
@@ -141,38 +141,38 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
+<span class="cline-any cline-yes">708x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">352x</span>
+<span class="cline-any cline-yes">341x</span>
+<span class="cline-any cline-yes">346x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">352x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -192,13 +192,13 @@ export abstract class Unit {
     names: Array&lt;string&gt;
 &nbsp;
     mathConfig: MathematicalConfig 
-<span class="fstat-no" title="function not covered" >    public get hasAbsoluteZero() : boolean { return this.mathConfig.hasAbsoluteZero }</span>
-<span class="fstat-no" title="function not covered" >    public get isLinear() : boolean { return this.mathConfig.isLinear }</span>
+    public get hasAbsoluteZero() : boolean { return this.mathConfig.hasAbsoluteZero }
+    public get isLinear() : boolean { return this.mathConfig.isLinear }
 &nbsp;
     shape: UnitShape
 &nbsp;
     constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, mathConfig: MathematicalConfig, nameConfig: UnitNameConfig){
-        this.shape = shape instanceof UnitShape ? shape : new UnitShape(shape)
+        this.shape = new UnitShape(shape) // instanceof UnitShape ? shape : new UnitShape(shape)
         
         this.name = nameConfig.name
         this.abbreviation = nameConfig.abbreviation
@@ -207,7 +207,7 @@ export abstract class Unit {
 &nbsp;
         let nameSet = new Set([nameConfig.name])
         if (nameConfig.abbreviation) nameSet.add(nameConfig.abbreviation)
-        if (nameConfig.otherNames) <span class="branch-0 cbranch-no" title="branch not covered" >nameConfig.otherNames.forEach((otherName) =&gt; {nameSet.add(otherName)})</span>
+        if (nameConfig.otherNames) nameConfig.otherNames.forEach((otherName) =&gt; {nameSet.add(otherName)})
         this.names = new Array&lt;string&gt;(...nameSet.values())
     }
 &nbsp;
@@ -215,10 +215,10 @@ export abstract class Unit {
     //     valuesToTest.forEach(x =&gt; {assert(this.roundTripError(x) &lt; maxPercentError*x)})
     // }
     
-<span class="fstat-no" title="function not covered" >    roundTripError(valueToTest: number){</span>
-<span class="cstat-no" title="statement not covered" >        let y = this.toBaseSI(this.fromBaseSI(valueToTest))</span>
-<span class="cstat-no" title="statement not covered" >        return Math.abs(y - valueToTest)</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
+    // roundTripError(valueToTest: number){
+    //     let y = this.toBaseSI(this.fromBaseSI(valueToTest))
+    //     return Math.abs(y - valueToTest)
+    // }
 &nbsp;
     abstract toBaseSI(quantityInThisUnit: number): number
     abstract fromBaseSI(quantityInBaseSI: number): number
@@ -226,12 +226,12 @@ export abstract class Unit {
     convertTo(amountInThisUnit:number, toUnit:Unit): number {
         if (this.shape.equal(toUnit.shape)) {
             return toUnit.fromBaseSI(this.toBaseSI(amountInThisUnit))
-        }<span class="branch-0 cbranch-no" title="branch not covered" > else {</span>
-<span class="cstat-no" title="statement not covered" >            throw TypeError(`Unit types do not match: ${this.shape} != ${toUnit.shape}`)</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
+        } else {
+            throw TypeError(`Unit types do not match: ${this.shape} != ${toUnit.shape}`)
+        }
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    toString(){ return this.abbreviation ? this.abbreviation : this.name }</span>
+    toString(){ return this.abbreviation ? this.abbreviation : this.name }
 }
 &nbsp;
 export default Unit</pre></td></tr></table></pre>
@@ -241,7 +241,7 @@ export default Unit</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-16T23:53:24.258Z
+                at 2023-04-03T01:45:27.425Z
             </div>
         <script src="prettify.js"></script>
         <script>

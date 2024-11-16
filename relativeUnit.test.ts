@@ -1,6 +1,7 @@
 import {expect, describe, test} from "@jest/globals"
 import { BaseSIUnit } from "./baseSIUnit"
 import { RelativeUnit } from "./relativeUnit"
+import { UnitShape } from "./unitShape"
 
 describe("Creating Base and Relative Units", () => {
 
@@ -10,7 +11,7 @@ describe("Creating Base and Relative Units", () => {
     const fractionOfRelativeUnitScale = relativeUnitScale / fractionUnitScale
     const exampleValues = [10, 1, -27, 0.24, 31892]
 
-    let exampleBaseUnit = new BaseSIUnit("ExampleUnitDimension", {name: "Example Base Unit", abbreviation: "EBU"});
+    let exampleBaseUnit = new BaseSIUnit(UnitShape.FromBasisType("ExampleUnitDimension"), {name: "Example Base Unit", abbreviation: "EBU"});
     let exampleRelativeUnit = new RelativeUnit(exampleBaseUnit, relativeUnitScale, {name: "Example Relative Unit", abbreviation: "ERU"})
     let exampleMultipleUnit = RelativeUnit.MultipleOf(exampleBaseUnit, multipleUnitScale, {name: `${multipleUnitScale} Example Base Units`, abbreviation: "EBUM"})
     let exampleFractionalUnit = RelativeUnit.FractionOf(exampleBaseUnit, fractionUnitScale, {name: `1/${fractionUnitScale}th of an Example Base Unit`, abbreviation: "EBUF"})

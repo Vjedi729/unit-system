@@ -1,13 +1,18 @@
 import { UnitNameConfig, UnitNameConstruct } from "./nameConstruct";
 import { MathematicalConfig, Unit } from "./unit";
-import UnitShape, { UnitShapeMap } from "./unitShape";
+import { ShapeMapAdd, ShapeMapScale, UnitShape, UnitShapeMap } from "./unitShape";
 
-type UnitPower = [Unit, number]
-type UnitPowers = Array<UnitPower>
+import { BaseSIUnit } from "./baseSIUnit";
+import { IntRange } from "./ts-number-literal-type-arithmetic/typeIntRange";
+
+export type UnitPower<ThisUnitShapeMap extends UnitShapeMap, Power extends number> = [Unit<ThisUnitShapeMap>, Power]
+// TODO: Remove these, which impede type checking by shape.
+export type AnyUnitPower = UnitPower<UnitShapeMap, number>
+type UnitPowers = Array<AnyUnitPower>
 
 // Sorts by positive powers before negative powers then unit name (in A to Z alphabetical order) then by power (from least to greatest)
 const sortResult = {aGreater: 1, bGreater: -1, bothEqual: 0}
-function unitPowerSort([unitA, powerA]: UnitPower , [unitB, powerB]: UnitPower) {
+function unitPowerSort([unitA, powerA]: UnitPower<UnitShapeMap, number>, [unitB, powerB]: UnitPower<UnitShapeMap, number>) {
     // Positive powers before negative powers
     if ( powerA > 0 && powerB < 0 ) {
         return sortResult.bGreater
@@ -30,11 +35,35 @@ function createName(unitPowers: UnitPowers): string {
     return unitPowers.map(([unit, power]) => power==1 ? unit.name : `${unit.name}^${power}`).join(" * ")
 }
 
-function createShape(unitPowers: UnitPowers): UnitShape {
-    return unitPowers.reduce<UnitShape>(
-        (prev:UnitShape, [unit, power]) => prev.add(unit.shape.multiply(power)),
+type UnitPowerReducer<ThisShapeMap extends UnitShapeMap, ThisPower extends number, BaseShapeMap extends UnitShapeMap = {}> = ShapeMapAdd<BaseShapeMap, ShapeMapScale<ThisPower, ThisShapeMap>>;
+
+function createUnitShapeHelper<BaseShapeMap extends UnitShapeMap, ThisShapeMap extends UnitShapeMap, ThisPower extends number>(prevShape: UnitShape<BaseShapeMap>, currUnitPower: UnitPower<ThisShapeMap, ThisPower>): UnitShape<UnitPowerReducer<ThisShapeMap, ThisPower, BaseShapeMap>> {
+    return prevShape.add(currUnitPower[0].shape.multiply(currUnitPower[1]));
+}
+
+function testCreateShape<Shapes extends Record<string, UnitShapeMap>, Powers extends Record<keyof Shapes, number>>(unitPower: {[Key in keyof Shapes]: UnitPower<Shapes[Key], Powers[Key]>}) {}
+
+type UnitPowersShapeMapHelper<Current extends Array<AnyUnitPower>, BaseShapeMap extends UnitShapeMap = {}> = 
+    Current extends [UnitPower<infer CurrentShapeMap, infer CurrentPower>, ...infer RemainingUnitPowers extends Array<AnyUnitPower>] ?
+    UnitPowersShapeMapHelper<RemainingUnitPowers, UnitPowerReducer<CurrentShapeMap, CurrentPower, BaseShapeMap>> :
+    BaseShapeMap
+    ;
+export type UnitPowersShapeMap<ThisUnitPowers extends Array<AnyUnitPower>> = UnitPowersShapeMapHelper<ThisUnitPowers, {}>
+
+const basisA = "A"
+const basisB = "B"
+const testUnitA = new BaseSIUnit(UnitShape.FromBasisType(basisA), new UnitNameConstruct("A1"));
+const testUnitB = new BaseSIUnit(UnitShape.FromBasisType(basisB), new UnitNameConstruct("B1"));
+type TestEmptyShapeMap = UnitPowersShapeMap<[]>
+type TestOneShapeMap = UnitPowersShapeMap<[[typeof testUnitA, 1]]>
+type TestComboShapeMap = UnitPowersShapeMap<[[typeof testUnitA, 1], [typeof testUnitB, 1]]>
+
+function createShape<ThisUnitPowers extends UnitPowers>(unitPowers: UnitPowers): UnitShape<UnitPowersShapeMap<ThisUnitPowers>>
+{
+    return unitPowers.reduce(
+        createUnitShapeHelper,
         new UnitShape({})
-    )
+    ) as UnitShape<UnitPowersShapeMap<ThisUnitPowers>>;
 }
 
 function createAbbreviation(unitPowers: UnitPowers): string | undefined {
@@ -54,11 +83,11 @@ function createMathConfig(unitPowers: UnitPowers): MathematicalConfig {
     )
 }
 
-export class CombinationUnit extends Unit {
+export class CombinationUnit<ThisUnitPowers extends UnitPowers> extends Unit<UnitPowersShapeMap<ThisUnitPowers>> {
     static nameRegistry: Record<string, UnitNameConfig> = {}
 
     unitPowers: UnitPowers
-    override abbreviation: string;
+    // override abbreviation: string;
 
     private static SortUnitPowers(unitPowers: UnitPowers) : UnitPowers {
         return unitPowers.sort(unitPowerSort)
@@ -75,7 +104,7 @@ export class CombinationUnit extends Unit {
         let flatUnitPowers = CombinationUnit.FlattenUnitPowers(unitPowers)
 
         // Combine powers of the same unit
-        let combinedUnitPowers: Record<string, UnitPower> = {}
+        let combinedUnitPowers: Record<string, AnyUnitPower> = {}
         flatUnitPowers.forEach(([unit, power]) => {
             let key = JSON.stringify(unit)
             let [_, prevPower] = combinedUnitPowers[key] || [undefined, 0]
@@ -83,7 +112,7 @@ export class CombinationUnit extends Unit {
         })
 
         // Remove units with power 0
-        let filteredUnitPowers: Record<string, UnitPower> = {}
+        let filteredUnitPowers: Record<string, AnyUnitPower> = {}
         Object.entries(combinedUnitPowers).filter(([, [, power]]) => power != 0).forEach(
             ([name, unitPower]) => { filteredUnitPowers[name] = unitPower }
         ) 
@@ -91,23 +120,23 @@ export class CombinationUnit extends Unit {
         return CombinationUnit.SortUnitPowers(Object.entries(filteredUnitPowers).map(([, entry]) => entry))
     }
 
-    constructor(unitPowers: UnitPowers, nameConfig?: UnitNameConfig){
-        unitPowers = CombinationUnit.SimplifyUnitPowers(unitPowers)
+    constructor(unitPowers: ThisUnitPowers, nameConfig?: UnitNameConfig){
+        const simplifiedUnitPowers = CombinationUnit.SimplifyUnitPowers(unitPowers)
         
         if (nameConfig) {
             // Register name and abbreviation
-            let createdName = createName(unitPowers)
+            let createdName = createName(simplifiedUnitPowers)
             // let registeredName = CombinationUnit.nameRegistry[createdName]
             CombinationUnit.nameRegistry[createdName] = nameConfig
         } else {
-            let createdName = createName(unitPowers)
+            let createdName = createName(simplifiedUnitPowers)
             let registeredNameConfig = CombinationUnit.nameRegistry[createdName]
-            nameConfig = registeredNameConfig ? registeredNameConfig : new UnitNameConstruct(createdName, createAbbreviation(unitPowers)) // TODO: Create combinatoric otherNames?
+            nameConfig = registeredNameConfig ? registeredNameConfig : new UnitNameConstruct(createdName, createAbbreviation(simplifiedUnitPowers)) // TODO: Create combinatoric otherNames?
         }
         // TODO: Create combinatoric otherNames?
 
-        super(createShape(unitPowers), createMathConfig(unitPowers), nameConfig)
-        this.unitPowers = unitPowers  
+        super(createShape(simplifiedUnitPowers), createMathConfig(simplifiedUnitPowers), nameConfig)
+        this.unitPowers = simplifiedUnitPowers  
     }
 
     toBaseSI(quantityInThisUnit: number): number {

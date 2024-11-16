@@ -1,17 +1,18 @@
 import { expect, describe, test } from "@jest/globals";
 import { BaseSIUnit } from "./baseSIUnit";
-import { CombinationUnit } from "./combinationUnit"
+import { AnyUnitPower, CombinationUnit } from "./combinationUnit"
 import { NoneUnit } from "./noneUnit"
 import { Unit } from './unit'
 import SimpleUnit from "./simpleUnit";
+import { UnitShape, UnitShapeMap } from "./unitShape";
 
 function getPower(name: string): number {
     let i = name.indexOf('^')
     return Number.parseInt(name.slice(i+1));
 }
 
-function combinatoricUnits(a: Readonly<Record<string, Unit>>, b?: Readonly<Record<string, Unit>>): Record<string, CombinationUnit> {
-    let comboUnits: Record<string, CombinationUnit> = {};
+function combinatoricUnits(a: Readonly<Record<string, Unit<UnitShapeMap>>>, b?: Readonly<Record<string, Unit<UnitShapeMap>>>): Record<string, CombinationUnit<AnyUnitPower[]>> {
+    let comboUnits: Record<string, CombinationUnit<AnyUnitPower[]>> = {};
     Object.entries(a).forEach(([shape1, unit1]) => {
         Object.entries(b ? b : a).forEach(([shape2, unit2]) => {
             comboUnits[`${shape1}${shape2}`] = new CombinationUnit([[unit1, 1], [unit2, 1]])
@@ -27,12 +28,12 @@ const abbrSplitter = " "
 
 describe("Creating Base and Combination Units", () => {
 
-    const exampleUnitShapes = ['A', 'D', 'B']
+    const exampleUnitShapes: ['A', 'D', 'B'] = ['A', 'D', 'B']
     
-    const  exampleBaseUnits: Record<string, BaseSIUnit> = exampleUnitShapes.reduce(
-        (map: Record<string, BaseSIUnit>, shape: string, index:number) => {
+    const  exampleBaseUnits = exampleUnitShapes.reduce(
+        (map: Record<string, BaseSIUnit<UnitShapeMap>>, shape: string, index:number) => {
             map[shape] = new BaseSIUnit(
-                shape, 
+                UnitShape.FromBasisType(shape), 
                 {
                     name: `Example Base ${shape} Unit`, 
                     abbreviation: (index == 0 ? `EB${shape}U`: undefined)
@@ -43,10 +44,10 @@ describe("Creating Base and Combination Units", () => {
         {}
     );
 
-    const exampleComboUnits: Record<string, CombinationUnit> = combinatoricUnits(exampleBaseUnits);
+    const exampleComboUnits: Record<string, CombinationUnit<AnyUnitPower[]>> = combinatoricUnits(exampleBaseUnits);
 
     describe("Combination Units auto-generate abbreviations iff all components have abbreviations", () => {
-        Object.values(exampleComboUnits).forEach((comboUnit: CombinationUnit) => {
+        Object.values(exampleComboUnits).forEach((comboUnit: CombinationUnit<AnyUnitPower[]>) => {
             test(`with ${comboUnit.name}`, () => {
                 if(comboUnit.unitPowers.every(([unit, power]) => unit.abbreviation != undefined)) {
                     expect(comboUnit.abbreviation).toBeDefined()
@@ -71,7 +72,7 @@ describe("Creating Base and Combination Units", () => {
 
     describe("Unit power list is always flat", () => {
         // Create multi-level combo units
-        let exampleComboOfComboUnits: Record<string, CombinationUnit> = combinatoricUnits(exampleComboUnits);
+        let exampleComboOfComboUnits: Record<string, CombinationUnit<AnyUnitPower[]>> = combinatoricUnits(exampleComboUnits);
 
         // Check that UnitPowers are flattened
         Object.values(exampleComboOfComboUnits).forEach((comboOfComboUnit) => {
@@ -83,7 +84,7 @@ describe("Creating Base and Combination Units", () => {
         })
     })
 
-    // FIXME: Tests for stricter 'expected order', rather than only 'consistent order'
+    // FIXME: Currently tests for stricter 'expected order', rather than only 'consistent order' (which would be correct)
     describe("Name order is 'consistent'", () => {
         [1, -1 /* Unit Power Sign */].forEach((sign) => {
             describe((sign > 0) ? "Positive" : "Negative" + " powers are individually ordered alphabetically", () => {
@@ -129,12 +130,12 @@ describe("Creating Base and Combination Units", () => {
         // Testing order of two units with the same names:
         describe("Testing order of two units with the same names is by power", () => {
 
-            let duplicateExampleBaseUnits: Record<string, BaseSIUnit> = {};
+            let duplicateExampleBaseUnits: Record<string, BaseSIUnit<UnitShapeMap>> = {};
             Object.entries(exampleBaseUnits).forEach( ([shape, unit]) => {
-                duplicateExampleBaseUnits[shape] = new BaseSIUnit(`${shape}2`, {name: unit.name, abbreviation: unit.abbreviation, otherNames: [`Duplicate of ${unit.name}`]})
+                duplicateExampleBaseUnits[shape] = new BaseSIUnit(UnitShape.FromBasisType(`${shape}2`), {name: unit.name, abbreviation: unit.abbreviation, otherNames: [`Duplicate of ${unit.name}`]})
             });
             
-            let combinationOfDuplicateUnits: Record<string, CombinationUnit> = {};
+            let combinationOfDuplicateUnits: Record<string, CombinationUnit<AnyUnitPower[]>> = {};
             exampleUnitShapes.forEach((shape) => {
                 combinationOfDuplicateUnits[shape] = new CombinationUnit(([[exampleBaseUnits[shape], 1], [duplicateExampleBaseUnits[shape], 2]]))
             });
@@ -169,21 +170,21 @@ describe("Creating Base and Combination Units", () => {
     describe("Units conversions produce correct values", () => {
 
         const exampleScaleFactors = [3, 12, -0.166666, 1000]
-        const shapeToScaleFactor = exampleUnitShapes.reduce((map, shape, idx) => {
+        const shapeToScaleFactor: Record<(typeof exampleUnitShapes)[number], number> = exampleUnitShapes.reduce((map: Partial<Record<(typeof exampleUnitShapes)[number], number>>, shape, idx) => {
             map[shape] = exampleScaleFactors[idx]
             return map;
-        }, {})
+        }, {}) as Record<(typeof exampleUnitShapes)[number], number>
 
-        const exampleRelativeUnits: Record<string, SimpleUnit> = exampleUnitShapes.reduce(
-            (map, shape) => { 
+        const exampleRelativeUnits: Record<string, SimpleUnit<UnitShapeMap>> = exampleUnitShapes.reduce(
+            (map: Partial<Record<(typeof exampleUnitShapes)[number], SimpleUnit<UnitShapeMap>>>, shape) => { 
                 let scaleFactor = shapeToScaleFactor[shape]
-                map[shape] = new SimpleUnit(shape, scaleFactor, { name: `[${scaleFactor}${shape}]` }); 
+                map[shape] = new SimpleUnit(UnitShape.FromBasisType(shape), scaleFactor, { name: `[${scaleFactor}${shape}]` }); 
                 return map; 
             },
             {}
         )
 
-        const exampleRelativeComboUnits: Record<string, CombinationUnit> = combinatoricUnits(exampleRelativeUnits);
+        const exampleRelativeComboUnits: Record<string, CombinationUnit<AnyUnitPower[]>> = combinatoricUnits(exampleRelativeUnits);
 
         const valuesToConvert = [1, 5, 10, -3, 12.513]
         valuesToConvert.forEach((valueToConvert) => {
@@ -210,7 +211,7 @@ describe("Creating Base and Combination Units", () => {
 
                     let comboUnits = Object.values(exampleComboUnits).concat(Object.values(exampleRelativeComboUnits));
 
-                    comboUnits.forEach((unit: CombinationUnit) => {
+                    comboUnits.forEach((unit: CombinationUnit<AnyUnitPower[]>) => {
                         expect(unit.convertTo(valueToConvert, unit)).toBeCloseTo(valueToConvert)
                     })
 

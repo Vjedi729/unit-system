@@ -1,7 +1,7 @@
 import {test, expect, describe} from '@jest/globals'
 import { UnitShape } from './unitShape'
 
-const emptyShape = new UnitShape();
+const emptyShape = new UnitShape({});
 
 test("Default UnitShape is empty", () => {
     expect(Object.entries(emptyShape.shape)).toEqual([])
@@ -9,15 +9,15 @@ test("Default UnitShape is empty", () => {
 })
 
 const strBaseShapes = ['A', 'D', 'C']
-const baseShapes: UnitShape[] = strBaseShapes.map((str) => new UnitShape(str));
+const baseShapes = strBaseShapes.map((str) => UnitShape.FromBasisType(str));
 
 describe("UnitShape functions", () => {
     test("UnitShape add()", () => {
         strBaseShapes.forEach((name1, index1) => {
-            let shape1: UnitShape = baseShapes[index1];
+            let shape1 = baseShapes[index1];
 
             strBaseShapes.forEach((name2, index2) => {
-                let shape2: UnitShape = baseShapes[index2];
+                let shape2 = baseShapes[index2];
 
                 let sumShape = shape1.add(shape2)
                 if (name1 == name2) {
@@ -33,8 +33,8 @@ describe("UnitShape functions", () => {
 
         baseShapes.forEach((shape) => {
             scaleFactors.forEach((scaleFactor) => {
-                let multShape = shape.multiply(scaleFactor)
-                Object.entries(multShape.shape).forEach(([key, power]) => {
+                let multipliedShape = shape.multiply(scaleFactor)
+                Object.entries(multipliedShape.shape).forEach(([key, power]) => {
                     expect(power).toEqual(shape.shape[key] * scaleFactor)
                 })
             })

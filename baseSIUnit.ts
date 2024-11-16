@@ -1,10 +1,10 @@
 import { UnitNameConfig } from "./nameConstruct"
 import Unit from "./unit"
-import UnitShape, { UnitBasisType, UnitShapeMap } from "./unitShape"
+import { UnitShape, UnitBasisType, UnitShapeMap } from "./unitShape"
 
-export class BaseSIUnit extends Unit {
+export class BaseSIUnit<ThisUnitShapeMap extends UnitShapeMap> extends Unit<ThisUnitShapeMap> {
 
-    constructor(shape: UnitBasisType | UnitShapeMap | UnitShape, nameConfig: UnitNameConfig){
+    constructor(shape: UnitShape<ThisUnitShapeMap>, nameConfig: UnitNameConfig){
         super(shape, { isLinear: true, hasAbsoluteZero: true}, nameConfig)
     }
 

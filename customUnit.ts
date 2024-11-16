@@ -1,14 +1,14 @@
 import { UnitNameConfig } from "./nameConstruct";
 import Unit, { MathematicalConfig } from "./unit";
-import UnitShape, { UnitBasisType, UnitShapeMap } from "./unitShape";
+import { UnitShape, UnitBasisType, UnitShapeMap } from "./unitShape";
 
-export class CustomUnit extends Unit {
+export class CustomUnit<ThisUnitShapeMap extends UnitShapeMap> extends Unit<ThisUnitShapeMap> {
     toBaseSIFunction: (numInThisUnit: number) => number
     fromBaseSIFunction: (numInBaseSI: number) => number
 
 
     constructor(
-        shape: UnitBasisType | UnitShapeMap | UnitShape,
+        shape: UnitShape<ThisUnitShapeMap>,
         toBaseSIFunction: (numInThisUnit: number) => number, 
         fromBaseSIFunction: (numInBaseSI: number) => number, 
         mathConfig: MathematicalConfig,

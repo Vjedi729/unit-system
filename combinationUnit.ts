@@ -41,8 +41,6 @@ function createUnitShapeHelper<BaseShapeMap extends UnitShapeMap, ThisShapeMap e
     return prevShape.add(currUnitPower[0].shape.multiply(currUnitPower[1]));
 }
 
-function testCreateShape<Shapes extends Record<string, UnitShapeMap>, Powers extends Record<keyof Shapes, number>>(unitPower: {[Key in keyof Shapes]: UnitPower<Shapes[Key], Powers[Key]>}) {}
-
 type UnitPowersShapeMapHelper<Current extends Array<AnyUnitPower>, BaseShapeMap extends UnitShapeMap = {}> = 
     Current extends [UnitPower<infer CurrentShapeMap, infer CurrentPower>, ...infer RemainingUnitPowers extends Array<AnyUnitPower>] ?
     UnitPowersShapeMapHelper<RemainingUnitPowers, UnitPowerReducer<CurrentShapeMap, CurrentPower, BaseShapeMap>> :

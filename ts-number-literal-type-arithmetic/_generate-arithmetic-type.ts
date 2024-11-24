@@ -29,5 +29,5 @@ export function generateArithmeticTypeFile<T extends number | string>(filePathAn
 	fs.writeFileSync(filePathAndName, "import {IfEq} from './typeEqual'\n"+generateArithmeticType(genericTypeName, funcName, func, values, specialCases, fallbackType))
 }
 
-generateArithmeticTypeFile<number>("generatedTypeAdd.ts", "number", "Add", (x, y) => x+y, [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5], [{value: 0, resultWhenThisTypeIsValue(_, otherTypeName){return otherTypeName}}])
-generateArithmeticTypeFile<number>("generatedTypeMultiply.ts", "number", "Multiply", (x, y) => x*y, [-5, -4, -3, -2, -1, 2, 3, 4, 5], [{value: 0, resultWhenThisTypeIsValue(){return "0"}}, {value: 1, resultWhenThisTypeIsValue(_, otherTypeName){return otherTypeName}}])
+// generateArithmeticTypeFile<number>("generatedTypeAdd.ts", "number", "Add", (x, y) => x+y, [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5], [{value: 0, resultWhenThisTypeIsValue(_, otherTypeName){return otherTypeName}}])
+// generateArithmeticTypeFile<number>("generatedTypeMultiply.ts", "number", "Multiply", (x, y) => x*y, [-5, -4, -3, -2, -1, 2, 3, 4, 5], [{value: 0, resultWhenThisTypeIsValue(){return "0"}}, {value: 1, resultWhenThisTypeIsValue(_, otherTypeName){return otherTypeName}}])

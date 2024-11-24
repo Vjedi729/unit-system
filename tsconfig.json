@@ -3,7 +3,7 @@
         "strict": true,
         "strictNullChecks": true,
         "esModuleInterop": true,
-        "target": "ES2023",
-        "moduleResolution": "Bundler",
+        "target": "es2022",
+        "moduleResolution": "node",
     }
 }

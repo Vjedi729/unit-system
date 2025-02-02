@@ -1,8 +1,12 @@
-import { UnitNameConfig } from "./nameConstruct";
-import Unit, { MathematicalConfig } from "./unit";
+import { AnyUnitNameConfig, UnitNameConfig } from "./nameConstruct";
+import Unit, { AnyMathematicalConfig, MathematicalConfig } from "./unit";
 import { UnitShape, UnitBasisType, UnitShapeMap } from "./unitShape";
 
-export class CustomUnit<ThisUnitShapeMap extends UnitShapeMap> extends Unit<ThisUnitShapeMap> {
+export class CustomUnit<
+    ThisUnitShapeMap extends UnitShapeMap,
+    ThisNameConfig extends AnyUnitNameConfig,
+    ThisMathConfig extends AnyMathematicalConfig
+> extends Unit<ThisUnitShapeMap, ThisNameConfig, ThisMathConfig> {
     toBaseSIFunction: (numInThisUnit: number) => number
     fromBaseSIFunction: (numInBaseSI: number) => number
 
@@ -11,8 +15,8 @@ export class CustomUnit<ThisUnitShapeMap extends UnitShapeMap> extends Unit<This
         shape: UnitShape<ThisUnitShapeMap>,
         toBaseSIFunction: (numInThisUnit: number) => number, 
         fromBaseSIFunction: (numInBaseSI: number) => number, 
-        mathConfig: MathematicalConfig,
-        nameConfig: UnitNameConfig,
+        mathConfig: ThisMathConfig,
+        nameConfig: ThisNameConfig,
     ){
         super(shape, mathConfig, nameConfig)
         this.toBaseSIFunction = toBaseSIFunction

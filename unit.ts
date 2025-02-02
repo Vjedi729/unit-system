@@ -1,24 +1,29 @@
 // import { assert } from "console"
-import { UnitNameConfig } from "./nameConstruct"
+import { AnyUnitNameConfig, UnitNameConfig } from "./nameConstruct"
 import { UnitShape, UnitBasisType, UnitShapeMap } from "./unitShape"
 
-export interface MathematicalConfig {
-    hasAbsoluteZero: boolean
-    isLinear: boolean
+export interface MathematicalConfig<ThisHasAbsoluteZero extends boolean, ThisIsLinear extends boolean> {
+    hasAbsoluteZero: ThisHasAbsoluteZero
+    isLinear: ThisIsLinear
 }
+export type AnyMathematicalConfig = MathematicalConfig<boolean, boolean>;
 
-export abstract class Unit<ThisUnitShapeMap extends UnitShapeMap> {
-    name: string
-    abbreviation?: string
-    names: Array<string>
+export abstract class Unit<
+    ThisUnitShapeMap extends UnitShapeMap, 
+    ThisNameConfig extends AnyUnitNameConfig,
+    ThisMathematicalConfig extends AnyMathematicalConfig
+> {
+    name: ThisNameConfig["name"]
+    abbreviation?: ThisNameConfig["abbreviation"]
+    names: ThisNameConfig["otherNames"]
 
-    mathConfig: MathematicalConfig 
+    mathConfig: ThisMathematicalConfig 
     public get hasAbsoluteZero() : boolean { return this.mathConfig.hasAbsoluteZero }
     public get isLinear() : boolean { return this.mathConfig.isLinear }
 
     shape: UnitShape<ThisUnitShapeMap>
 
-    constructor(shape: UnitShape<ThisUnitShapeMap>, mathConfig: MathematicalConfig, nameConfig: UnitNameConfig){
+    constructor(shape: UnitShape<ThisUnitShapeMap>, mathConfig: ThisMathematicalConfig, nameConfig: ThisNameConfig){
         this.shape = shape // instanceof UnitShape ? shape : new UnitShape(shape)
         
         this.name = nameConfig.name
@@ -44,7 +49,7 @@ export abstract class Unit<ThisUnitShapeMap extends UnitShapeMap> {
     abstract toBaseSI(quantityInThisUnit: number): number
     abstract fromBaseSI(quantityInBaseSI: number): number
 
-    convertTo(amountInThisUnit:number, toUnit:Unit<ThisUnitShapeMap>): number {
+    convertTo(amountInThisUnit:number, toUnit:Unit<ThisUnitShapeMap, AnyUnitNameConfig, AnyMathematicalConfig>): number {
         if (this.shape.equal(toUnit.shape)) { // When `ThisUnitShapeMap` is specifically defined, this will always be true. 
             return toUnit.fromBaseSI(this.toBaseSI(amountInThisUnit))
         } else {
@@ -54,5 +59,7 @@ export abstract class Unit<ThisUnitShapeMap extends UnitShapeMap> {
 
     toString(){ return this.abbreviation ? this.abbreviation : this.name }
 }
+
+export type AnyUnit = Unit<UnitShapeMap, AnyUnitNameConfig, AnyMathematicalConfig>;
 
 export default Unit

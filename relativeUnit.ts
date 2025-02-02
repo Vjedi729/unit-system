@@ -1,13 +1,17 @@
-import Unit from './unit'
-import { UnitNameConfig } from './nameConstruct'
+import Unit, { AnyMathematicalConfig } from './unit'
+import { AnyUnitNameConfig, UnitNameConfig } from './nameConstruct'
 import { UnitShapeMap } from './unitShape'
 
-export class RelativeUnit<ThisUnitShapeMap extends UnitShapeMap> extends Unit<ThisUnitShapeMap> {
+export class RelativeUnit<
+    ThisUnitShapeMap extends UnitShapeMap, 
+    ThisNameConfig extends AnyUnitNameConfig,
+    ThisMathConfig extends AnyMathematicalConfig
+> extends Unit<ThisUnitShapeMap, ThisNameConfig, ThisMathConfig> {
 
-    relativeTo: Unit<ThisUnitShapeMap>
+    relativeTo: Unit<ThisUnitShapeMap, AnyUnitNameConfig, ThisMathConfig>
     relativeUnitPerThisUnit: number
     
-    constructor(relativeTo:Unit<ThisUnitShapeMap>, relativeUnitPerThisUnit:number, nameConfig: UnitNameConfig){
+    constructor(relativeTo:Unit<ThisUnitShapeMap, AnyUnitNameConfig, ThisMathConfig>, relativeUnitPerThisUnit:number, nameConfig: ThisNameConfig){
         super(relativeTo.shape, relativeTo.mathConfig, nameConfig)
 
         this.relativeUnitPerThisUnit = relativeUnitPerThisUnit
@@ -22,11 +26,19 @@ export class RelativeUnit<ThisUnitShapeMap extends UnitShapeMap> extends Unit<Th
         return this.relativeTo.toBaseSI(quantityInThisUnit*this.relativeUnitPerThisUnit)
     }
 
-    static MultipleOf<ThisUnitShapeMap extends UnitShapeMap>(relativeTo:Unit<ThisUnitShapeMap>, relativeUnitPerThisUnit:number, nameConfig: UnitNameConfig){
-        return new RelativeUnit<ThisUnitShapeMap>(relativeTo, relativeUnitPerThisUnit, nameConfig)
+    static MultipleOf<
+        ThisUnitShapeMap extends UnitShapeMap, 
+        ThisNameConfig extends AnyUnitNameConfig,
+        ThisMathConfig extends AnyMathematicalConfig
+    >(relativeTo:Unit<ThisUnitShapeMap, AnyUnitNameConfig, ThisMathConfig>, relativeUnitPerThisUnit:number, nameConfig: ThisNameConfig) {
+        return new RelativeUnit<ThisUnitShapeMap, ThisNameConfig, ThisMathConfig>(relativeTo, relativeUnitPerThisUnit, nameConfig)
     }
 
-    static FractionOf<ThisUnitShapeMap extends UnitShapeMap>(relativeTo:Unit<ThisUnitShapeMap>, thisUnitPerRelativeUnit: number, nameConfig: UnitNameConfig): RelativeUnit<ThisUnitShapeMap> {
-        return new RelativeUnit<ThisUnitShapeMap>(relativeTo, 1/thisUnitPerRelativeUnit, nameConfig)
+    static FractionOf<
+        ThisUnitShapeMap extends UnitShapeMap, 
+        ThisNameConfig extends AnyUnitNameConfig,
+        ThisMathConfig extends AnyMathematicalConfig
+    >(relativeTo:Unit<ThisUnitShapeMap, AnyUnitNameConfig, ThisMathConfig>, thisUnitPerRelativeUnit: number, nameConfig: ThisNameConfig) {
+        return new RelativeUnit<ThisUnitShapeMap, ThisNameConfig, ThisMathConfig>(relativeTo, 1/thisUnitPerRelativeUnit, nameConfig)
     }
 }

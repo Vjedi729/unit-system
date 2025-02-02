@@ -2,7 +2,7 @@ import { describe, expect, test } from "@jest/globals"
 import { generateArithmeticType } from "./_generate-arithmetic-type"
 
 test("Generate Add Type", () => {
-	const generatedCode = generateArithmeticType<number>("number", "Add", (x, y) => x+y, [1, 2, 3, 4], [{value: 0, resultWhenThisTypeIsValue(thisTypeName, otherTypeName){ return otherTypeName}}]) 
+	const generatedCode = generateArithmeticType<number, number>("number", "number", "Add", (x, y) => x+y, [1, 2, 3, 4], [{value: 0, resultWhenThisTypeIsValue(thisTypeName, otherTypeName){ return otherTypeName}}]) 
 	expect(generatedCode).toEqual(`type AddHelper<X extends number, Y extends number, Fallback extends number> = 
 IfEq<X, 0, Y,
 	IfEq<Y, 0, X,
@@ -43,7 +43,7 @@ export type Add<X extends number, Y extends number> = IfEq<X, number, number, If
 })
 
 test("Generate Multiply Type", () => {
-	const generatedCode = generateArithmeticType<number>("number", "Multiply", (x, y) => x*y, [2, 3, 4, 5], [{value: 0, resultWhenThisTypeIsValue: ()=>"0"}, {value: 1, resultWhenThisTypeIsValue: (thisTypeName, otherTypeName)=>otherTypeName}])
+	const generatedCode = generateArithmeticType<number, number>("number", "number", "Multiply", (x, y) => x*y, [2, 3, 4, 5], [{value: 0, resultWhenThisTypeIsValue: ()=>"0"}, {value: 1, resultWhenThisTypeIsValue: (thisTypeName, otherTypeName)=>otherTypeName}])
 	const expectedCode = `type MultiplyHelper<X extends number, Y extends number, Fallback extends number> = 
 IfEq<X, 0, 0,
 	IfEq<Y, 0, 0,

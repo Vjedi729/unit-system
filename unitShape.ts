@@ -15,11 +15,11 @@ function UnitTypeShape_Equal(a: UnitShapeMap, b: UnitShapeMap): boolean {
     )
 }
 
-export type OLD_ShapeMapAdd<ShapeMapA extends UnitShapeMap, ShapeMapB extends UnitShapeMap> = (
-    {[Dim in Exclude<keyof ShapeMapB, keyof ShapeMapA>]: ShapeMapB[Dim]} &
-    {[Dim in Exclude<keyof ShapeMapA, keyof ShapeMapB>]: ShapeMapA[Dim]} &
-    {[Dim in Extract<keyof ShapeMapB, keyof ShapeMapA>]: Add<ShapeMapA[Dim], ShapeMapB[Dim]>}
-)
+// export type OLD_ShapeMapAdd<ShapeMapA extends UnitShapeMap, ShapeMapB extends UnitShapeMap> = (
+//     {[Dim in Exclude<keyof ShapeMapB, keyof ShapeMapA>]: ShapeMapB[Dim]} &
+//     {[Dim in Exclude<keyof ShapeMapA, keyof ShapeMapB>]: ShapeMapA[Dim]} &
+//     {[Dim in Extract<keyof ShapeMapB, keyof ShapeMapA>]: Add<ShapeMapA[Dim], ShapeMapB[Dim]>}
+// )
 
 export type ShapeMapAdd<ShapeMapA extends UnitShapeMap, ShapeMapB extends UnitShapeMap> = {
     [Dim in (keyof ShapeMapA | keyof ShapeMapB)]: (

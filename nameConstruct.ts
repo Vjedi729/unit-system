@@ -1,7 +1,11 @@
+export type AnyName = string;
+export type AnyAbbreviation = string | undefined;
+export type AnyOtherNames = string[] | undefined
+
 export interface UnitNameConfig<
-    ThisName extends string, 
-    ThisAbbreviation extends (string | undefined),
-    ThisOtherNames extends (string[] | undefined)
+    ThisName extends AnyName, 
+    ThisAbbreviation extends AnyAbbreviation,
+    ThisOtherNames extends AnyOtherNames
 > {
     name: ThisName
     abbreviation?: ThisAbbreviation
